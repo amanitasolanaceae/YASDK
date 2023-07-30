@@ -1,0 +1,19 @@
+with package
+  .path ..= ';./thirdparty/?.lua;./thirdparty/?/init.lua'
+  .path ..= ';./lib/?.lua;./lib/?/init.lua'
+  .path ..= ';./lib/?.moon;./lib/?/init.moon'
+  .path ..= ';./lib/?.yue;./lib/?/init.yue'
+  
+  .cpath ..= ';./thirdparty/lib/lua/5.1/?.so'
+
+global proto = require'lib.proto'.define
+global sleep = require'time.sleep'
+
+Sound = require 'class.sound'
+
+print Sound
+
+with s = Sound 'patch/dungeoncrawlss-data/steps/tile/squeak.wav'
+  print s
+  \play!
+  sleep 2

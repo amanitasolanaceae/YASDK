@@ -1,0 +1,13 @@
+-- truck
+-- based on cargo
+  -- https://github.com/bjornbytes/cargo
+  -- ^ MIT license
+  -- nothing was copypasted in the making of truck.yue
+-- truck is also MIT licensed as is the rest of YASDK
+  -- your mileage with it may be limited unless used for YASDK
+
+merge = (target, source, ...) ->
+  return target unless target? and source?
+  merge {...target, ...source}, ...
+
+-- to be finished later!!! hopefully!!!!!!!
