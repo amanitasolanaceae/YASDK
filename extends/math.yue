@@ -1,0 +1,16 @@
+with math
+    .round = (n, mult=1) -> .floor((n+mult/2)/mult)*mult
+
+    .clamp = (val, low=0, high=1) ->
+        return low if val < low
+        return high if val > high
+        val
+    
+    .between = (val, low, high) -> .clamp(val, low, high) == val
+    
+    .distance = (a, b) ->
+        xdist = .abs a.x - b.x
+        ydist = .abs a.y - b.y 
+        .max xdist, ydist
+    
+    .adjacent = (a, b) -> .distance(a, b) == 1

@@ -1,0 +1,19 @@
+with string
+    .capitalize = => @sub(1,1)\upper!..@sub(2)
+    .split = (delim='', maxNb) =>
+        return {@} unless @find delim
+        result = {}
+        if delim == ''
+            result[i] = @sub i, i for i=1,#@
+            return result
+        maxNb = 0 if maxNb == nil or maxNb < 1
+        pat = "(.-)#{delim}()"
+        nb = 0
+        local lastPos
+        for part, pos in @gmatch pat
+            nb += 1
+            result[nb] = part
+            lastPos = pos
+            break if nb == maxNb
+        result[nb + 1] = @sub lastPos unless nb == maxNb
+        result

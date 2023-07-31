@@ -1,0 +1,95 @@
+import floor from math
+
+with table
+    .random = (tbl) ->
+        if #tbl > 0
+            tbl[floor RNG\random #tbl]
+        else
+            error'table is empty'
+
+    .randomi = (tbl) -> 
+        if #tbl > 0
+            floor RNG\random #tbl
+        else
+            error'table is empty'
+
+    .shuffle = (tbl) -> 
+        shuffled = {}
+        while #tbl > 0
+            .insert shuffled, .remove(tbl, .randomi tbl) 
+        shuffled
+
+    .randomize = .shuffle
+
+    .slice = (values, i1=1, i2=#values) ->
+        res = {}
+        n = #values
+        if i2 < 0
+            i2 += n + 1
+        elseif i2 > n
+            i2 = n
+        return {} if i1 < 1 or i1 > n
+        k = 1
+        for i=i1,i2
+            res[k] = values[i]
+            k += 1
+        res
+
+    .indexOf = (values, value) ->
+        if values 
+            for i=1,#values
+                return i if values[i] == value
+        return .indexOfTable values, value if type(value) == 'table'
+        0
+
+    .indexOfTable = (values, value) ->
+        return 0 unless type(value) == 'table'
+        for k,v in ipairs values
+            if #v == #value
+                match = true
+                for i=1,#v
+                    match = false if v[i] != value[i]
+                return k if match
+        0
+
+    .copy = (tbl) ->
+        local copy
+        if type(tbl) == 'table'
+            copy = {}
+            for k, v in next, tbl, nil
+                copy[k] = .copy v 
+            setmetatable copy, getmetatable tbl
+        else
+            copy = tbl
+        copy
+    
+    .merge = (base, mod) ->
+        result = .copy base
+        m = .copy mod
+        for k, v in next, m, nil
+            if (type(result[k]) or false) == 'table'
+                result[k] = .merge(result[k] or {}, v or {})
+            else
+                result[k] = v unless result[k]
+        result
+    
+    .any = (tbl, cb) ->
+        for _, v in pairs tbl
+            return true if cb v 
+        false
+    
+    .all = (tbl, cb) ->
+        for _, v in pairs tbl
+            return false unless cb v 
+    
+    .contains = (tbl, val) -> .any tbl, (v) -> val == v
+    
+    .first = (tbl, cb) -> 
+        for v in *tbl
+            return v if cb v 
+    
+    .filter = (tbl, cb) ->
+        result = {}
+        for _, v in pairs tbl
+            .insert result, v if cb v 
+        result
