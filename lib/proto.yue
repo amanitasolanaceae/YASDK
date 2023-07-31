@@ -15,7 +15,9 @@ copy_value = (copies) =>
     __instance = {}
     __properties = {}
     is_a = {}
-    __meta = {}
+    __meta = {
+      __tostring: => name
+    }
     new_class = __type: name, :__properties, :is_a, :__instance, :__meta
 
     new = (...) ->
