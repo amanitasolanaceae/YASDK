@@ -1,0 +1,87 @@
+import floor, log, min, max, sqrt from math
+
+--i don't know what this is
+    --i assume it's important
+Mash = -> 
+    n = 0xefc8249d --???
+    mash = (data) ->
+        data = tostring data
+        for i=1,data\len!
+            n += data\byte i
+            h = 0.02519603282416938 * n
+            n = floor h
+            h -= n
+            h *= n
+            n = floor h
+            h -= n
+            n += h * 0x100000000 --2^32
+        floor(n) * 2.3283064365386963e-10 --2^-32
+    mash
+
+ranseed = (@seed=os.time!) => 
+    @c = 1
+    mash = Mash! --???
+    @["s"..i] = mash' ' for i=0,2
+    
+    for i=0,2
+        @["s"..i] -= mash @seed
+        @["s"..i] += 1 if @["s"..i] < 0
+    mash = nil --???
+
+class RNG
+    new: (seed) =>
+        @["s#{i}"] = 0 for i=0,2
+        @c = 1
+        @setSeed seed
+
+    getSeed: => @seed
+
+    setSeed: ranseed
+
+    getUniform: =>
+        t = 2091639 * @s0 + @c * 2.3283064365386963e-10 --2^-32
+        @s0 = @s1
+        @s1 = @s2
+        @c = floor t
+        @s2 = t - @c
+        @s2
+
+    getUniformInt: (lowerBound, upperBound) => 
+        maxi = max(lowerBound, upperBound)
+        mini = min(lowerBound, upperBound)
+        floor @getUniform! * (maxi - mini + 1) + mini
+
+    getNormal: (mean, stddev) =>
+        while true
+            u = 2*@getUniform!-1
+            v = 2*@getUniform!-1
+            r = u^2 + v^2
+            break if r > 1 or r == 0
+        gauss = u * sqrt -2 * log(r)/r
+        (mean or 0) + gauss*(stddev or 1)
+
+    getPercentage: => 1 + floor @getUniform!*100
+
+    getWeightedValue: (tbl) =>
+        total = 0
+        total += v for k, v in pairs tbl
+        rand = @getUniform!*total
+        part = 0
+        for k, v in pairs tbl
+            part += v
+            return k if rand < part
+        nil
+
+    getState: => { @s0, @s1, @s2, @c, @seed }
+
+    setState: (t) => { @s0, @s1, @s2, @c, @seed } = t
+
+    random: (a, b) => 
+        return unless a
+            @getUniform!
+        elseif not b
+            @getUniformInt 1, tonumber a
+        else
+            @getUniformInt tonumber(a), tonumber(b)
+
+    randomseed: ranseed

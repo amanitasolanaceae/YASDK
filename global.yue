@@ -4,6 +4,7 @@ inspect = require'inspect'
 proto = require'lib.proto'.define
 sleep = require'time.sleep'
 screen = require'BearLibTerminal'
+clock = require'clock'
 
 assert = (pass, ...) ->
   return pass, ... if pass

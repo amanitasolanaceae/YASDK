@@ -1,19 +1,15 @@
 with package
   .path ..= ';./thirdparty/?.lua;./thirdparty/?/init.lua'
-  .path ..= ';./lib/?.lua;./lib/?/init.lua'
-  .path ..= ';./lib/?.moon;./lib/?/init.moon'
-  .path ..= ';./lib/?.yue;./lib/?/init.yue'
-  
+  .path ..= ';./?/init.lua;./lib/?.lua;./lib/?/init.lua;./class/?.lua;./class/?/init.lua'
+  .path ..= ';./?/init.moon;./lib/?.moon;./lib/?/init.moon;./class/?.moon;./class/?/init.moon'
+
   .cpath ..= ';./thirdparty/lib/lua/5.1/?.so'
 
-global proto = require'lib.proto'.define
-global sleep = require'time.sleep'
+require'extends.table'
+require'extends.string'
+require'extends.math'
+require'global'
 
-Sound = require 'class.sound'
+require'game.roguetest'!
 
-print Sound
-
-with s = Sound 'patch/dungeoncrawlss-data/steps/tile/squeak.wav'
-  print s
-  \play!
-  sleep 2
+--screen.set"font: #{@font.face}, size=#{@font.px};"

@@ -1,0 +1,9 @@
+with require'time.clock'
+    .step = =>
+        unless @curTime
+            @curTime = @.gettime!
+            return
+        prevTime = @curTime
+        @curTime = @.gettime!
+        dt = @curTime - prevTime
+        dt

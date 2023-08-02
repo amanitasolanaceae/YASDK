@@ -1,0 +1,7 @@
+global GAME_PATH = ((...)\gsub '%.init', '')\gsub '%.', '/'
+class Roguetest extends require'game'
+    title: 'Roguetest'
+    size: w: 80, h: 25
+    font: 
+        face: "#{GAME_PATH}/fonts/FSEX302.ttf"
+        size: 24

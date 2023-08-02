@@ -1,0 +1,40 @@
+import abs, clamp, floor, random from math
+class Game
+    frametime: 1/60
+    offset: 0
+    title: 'Yet Another Stupid Roguelike'
+    size: w: 80, h: 25
+    new: =>
+        global GAME = @
+        print'guh'
+        with screen
+            .open!
+            .set"window: title='#{@title}', size=#{floor @size.w}x#{floor @size.h};"
+            .set"font: #{@font.face}, size=#{@font.size};" if @font
+        off = 0
+        --make the clock have its curTime before starting
+        clock\step!
+        frametimer = 0
+        while true
+            dt = clock\step!
+            for v in *{1/2, 1, 2}
+                v *= @frametime
+                dt = v if abs(dt - v) < .002
+            dt = clamp dt, 0, @frametime*2
+            frametimer += dt
+            frametimer = clamp frametimer, 0, @frametime*8
+            ticked = false
+            while frametimer > @frametime
+                frametimer -= @frametime
+                @update!
+                ticked = true
+            @render! if ticked
+            sleep .001
+    update: => @offset += 1
+    render: =>
+        for y=0,@size.h
+            for x=0,@size.w
+                rainbow = {'red', 'orange', 'yellow', 'green', 'blue', 'purple'}
+                screen.color screen.color_from_name rainbow[((x + y + @offset) % 6) + 1]
+                screen.put x, y, 0x2D62
+        screen.refresh!

@@ -4,49 +4,42 @@ import 'moonal'
 device ??= moonal.open_device!
 context ??= moonal.create_context device
 
-load = (filename) ->
-  sndfile, info = moonsndfile.open filename, 'r'
-  data = sndfile\read 'float', info.frames
-  format = switch info.channels
-    when 1
-	    'mono float32'
-    when 2
-	    'stereo float32'
-    else
-	    error 'unexpected number of channels in sound file'
-  moonsndfile.close sndfile
-  data, format, info.samplerate
+class Sound
+  @read: (filename) ->
+    sndfile, info = moonsndfile.open filename, 'r'
+    data = sndfile\read 'float', info.frames
+    format = switch info.channels
+      when 1
+        'mono float32'
+      when 2
+        'stereo float32'
+      else
+        error 'unexpected number of channels in sound file'
+    moonsndfile.close sndfile
+    data, format, info.samplerate
 
-P = proto 'Sound', ->
+  new: (filename) =>
+    data, format, srate = @@read filename
+    buffer = moonal.create_buffer context
+    moonal.buffer_data buffer, format, data, srate
+    data = nil
+    collectgarbage!
+    source = moonal.create_source context
+    source\set 'buffer', buffer
+    @source = source
+    @buffer = buffer
 
-  static
-    read: load
+  destroy: =>
+    with moonal
+      .delete_source @source
+      .delete_buffer @buffer
+    @buffer = @source = nil
 
-  instance
-    initialize: (filename) =>
-      data, format, srate = load filename
-      buffer = moonal.create_buffer context
-      moonal.buffer_data buffer, format, data, srate
-      data = nil
-      collectgarbage!
-      source = moonal.create_source context
-      source\set 'buffer', buffer
-      @source = source
-      @buffer = buffer
-  
-    destroy: =>
-      with moonal
-	      .delete_source @source
-	      .delete_buffer @buffer
-      @buffer = @source = nil
-
-    play: (loop=false) =>
-      with @source
-	      \set 'looping', loop
-      	\play!
-
-    stop: => @source\stop!
-    pause: => @source\pause!
-    rewind: => @source\rewind!
-
-P
+  play: (loop=false) =>
+    with @source
+      \set 'looping', loop
+      \play!
+      
+  stop: => @source\stop!
+  pause: => @source\pause!
+  rewind: => @source\rewind!
