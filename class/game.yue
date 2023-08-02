@@ -6,7 +6,6 @@ class Game
     size: w: 80, h: 25
     new: =>
         global GAME = @
-        print'guh'
         with screen
             .open!
             .set"window: title='#{@title}', size=#{floor @size.w}x#{floor @size.h};"
