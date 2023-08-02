@@ -19,11 +19,14 @@ There's _gonna_ be! If you're looking for a 'game' or useful 'engine' right now,
 	- I can't stress enough just how fucking awesome MoonScript is.
 	- There would be no Yuescript without MoonScript.
 - [BearLibTerminal](http://foo.wyrd.name/en:bearlibterminal)
-	- Roguetest would not exist without this.
+	- YASDK would not exist without this.
 - [MoonLibs](https://github.com/stetre/moonlibs)
   - These in particular:
     - [MoonSndFile - bindings to **libsndfile**](https://github.com/stetre/moonsndfile)
     - [MoonAL - bindings to **OpenAL**](https://github.com/stetre/moonal)
+- [1bardesign's stuff](https://github.com/1bardesign)
+	- `ferris` was the model for YASDK's ECS-like contraptions.
+	- Some `batteries` were selectively pulled and rewritten.
 - [rotLove](https://github.com/paulofmandown/rotLove)
 	- A whole lot of what's in `class/` was ported from here and made, in my opinion, infinitely more portable.
 	- rotLove is a port of `rot.js` for Love2D, so technically this credit is owed to `rot.js` as well. I've never opened `rot.js`, though.

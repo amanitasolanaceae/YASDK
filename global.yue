@@ -1,7 +1,6 @@
 global *
 
 inspect = require'inspect'
-proto = require'lib.proto'.define
 sleep = require'time.sleep'
 screen = require'BearLibTerminal'
 clock = require'clock'
@@ -10,6 +9,10 @@ assert = (pass, ...) ->
   return pass, ... if pass
   error concat({...}), 2 if select('#', ...) > 0
   error 'assertion failed!', 2
+
+isstring = (data) -> type(data) == 'string'
+isnumber = (data) -> type(data) == 'number'
+isfunction = (data) -> type(data) == 'function' 
 
 STATES =
     PLAYERS_TURN:   1

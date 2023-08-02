@@ -1,6 +1,17 @@
 import floor from math
 
 with table
+    .sorts =
+        less: (a, b) ->
+            types = 
+                number: 1
+                string: 2
+            sa = types[type a]
+            sb = types[type b]
+            return false unless a and b
+            return sa < sb if sa != sb
+            a < b 
+
     .random = (tbl) ->
         if #tbl > 0
             tbl[floor RNG\random #tbl]
@@ -35,14 +46,14 @@ with table
             k += 1
         res
 
-    .indexOf = (values, value) ->
+    .index_of = (values, value) ->
         if values 
             for i=1,#values
                 return i if values[i] == value
-        return .indexOfTable values, value if type(value) == 'table'
+        return .index_of_table values, value if type(value) == 'table'
         0
 
-    .indexOfTable = (values, value) ->
+    .index_of_table = (values, value) ->
         return 0 unless type(value) == 'table'
         for k,v in ipairs values
             if #v == #value
@@ -93,3 +104,23 @@ with table
         for _, v in pairs tbl
             .insert result, v if cb v 
         result
+
+    .insert_sorted = (t, v, less=.sorts.less) ->
+	    low = 1
+	    high = #t
+	    while low <= high
+		    mid = floor (low + high) / 2
+		    mid_val = t[mid]
+		    if less v, mid_val
+			    high = mid - 1
+		    else
+			    low = mid + 1
+	    .insert t, low, v
+	    t
+
+    .remove_value = (t, a) ->
+        i = .index_of t, a
+	    if i
+		    .remove t, i
+		    return true
+        false

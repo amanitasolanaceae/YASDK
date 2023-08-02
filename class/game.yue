@@ -1,4 +1,5 @@
 import abs, clamp, floor, random from math
+import 'kernel' as Kernel
 class Game
     frametime: 1/60
     offset: 0
@@ -10,7 +11,10 @@ class Game
             .open!
             .set"window: title='#{@title}', size=#{floor @size.w}x#{floor @size.h};"
             .set"font: #{@font.face}, size=#{@font.size};" if @font
-        off = 0
+        @prepare!
+        @run!
+    prepare: => @kernel = Kernel!
+    run: =>
         --make the clock have its curTime before starting
         clock\step!
         frametimer = 0
@@ -25,15 +29,9 @@ class Game
             ticked = false
             while frametimer > @frametime
                 frametimer -= @frametime
-                @update!
+                @update @frametime
                 ticked = true
-            @render! if ticked
+            @render frametimer / @frametime if ticked
             sleep .001
-    update: => @offset += 1
-    render: =>
-        for y=0,@size.h
-            for x=0,@size.w
-                rainbow = {'red', 'orange', 'yellow', 'green', 'blue', 'purple'}
-                screen.color screen.color_from_name rainbow[((x + y + @offset) % 6) + 1]
-                screen.put x, y, 0x2D62
-        screen.refresh!
+    update: (...) => @kernel\update ...
+    render: (...) => @kernel\render ...

@@ -1,0 +1,29 @@
+import insert_sorted from table
+import 'entity' as Entity
+class Kernel
+    new: (vars={}) =>
+        @[k] = v for k, v in pairs vars
+        @reset!
+    reset: => @systems = @tasks = {}
+    add_system: (name, sys, order) =>
+        error"already added system #{name}" if @systems[name]
+        @systems[name] = sys
+        sys\register @, order or @order.normal if isfunction sys.register
+    order:
+        early: -1e3
+        normal: 0
+        late: 1e3
+    _task_sort: (a, b) -> a[1] < b[1]
+    add_task: (name, func, order=@order.normal) =>
+        @tasks[name] ??= {}
+        insert_sorted @tasks[name], {order, func}, @_task_sort
+    run_task: (name, ...) =>
+        if tasks = @tasks[name]
+            for task in *tasks
+                func = task[2]
+                ret = func @, ...
+                return ret if ret
+        nil
+    update: (dt) => @run_task 'update', dt
+    render: => @run_task 'render'
+    entity: => Entity @systems

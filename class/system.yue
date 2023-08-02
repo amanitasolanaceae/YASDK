@@ -1,0 +1,21 @@
+import insert from table
+class System
+    new: =>
+        @all = @to_add = @to_remove = {}
+    update: (dt) =>
+    render: =>
+    add_component: (c) => insert @all, c
+    remove_component: (c) => remove_value @all, c
+    add: (...) => 
+        c = @create_component ...
+        insert @to_add, c
+        c
+    remove: (c) => insert @to_remove, c
+    flush: =>
+        while #@to_add > 0 or #@to_remove > 0
+            to_add = @to_add
+            to_remove = @to_remove
+            @to_add = @to_remove = {}
+    register: (kernel, order) =>
+        kernel\add_task 'update', (k, dt) -> @update dt, order
+        kernel\add_task 'render', (k) -> @render!, order

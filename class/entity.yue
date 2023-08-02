@@ -1,0 +1,46 @@
+import insert from table
+generic_id_increment = 0
+generate_unique_name = (fragment) -> 
+    name = fragment..generic_id_increment
+    generic_id_increment += 1
+    name
+default_destructor = (entity, component, system) -> system\remove component
+class Entity
+    new: (@systems) => @components = @origin_system = @destructors = {}
+    get_component: (name) => @components[name]
+    c: (...) => @get_component ...
+    add_existing_component: (name, component, system, destructor) =>
+        error"component name clash for #{name} on entity #{@}" if @c name
+        @components[name] = component
+        @origin_system[name] = system
+        @destructors[name] = destructor
+        component
+    add_component: (system, name, ...) =>
+        sys = @systems[system]
+        error"system '#{system}' not registered for entity #{@} - either a name typo or unexpected set of systems" unless sys
+        name ??= generate_unique_name'__unnamed_component_'
+        @add_existing_component name, sys\add(...), sys, default_destructor
+    remove_component: (name) =>
+        component = @c name
+        system = @origin_system[name]
+        destructor = @destructors[name]
+        @components[name] = @origin_system[name] = @destructors[name] = nil
+        destructor @, component, system if isfunction destructor
+    remove_component_by_value: (component) =>
+        for name, c in pairs @components
+            return @remove_component name if c == component
+    remove_all_components: => @remove_component name for name in pairs @components
+    --helper to check if something was already destroyed, but we're destroying it again
+    _check_double_destroyed: => error"entity #{@} double-destroyed" if @_destroyed
+    @to_be_destroyed = {}
+    destroy: => 
+        @_check_double_destroyed!
+        insert @to_be_destroyed @ unless @ in @to_be_destroyed
+    destroy_now: =>
+        @_check_double_destroyed!
+        @_destroyed = true
+        @remove_all_components!
+    @flush_entities: => 
+        if #@to_be_destroyed > 0
+            ent\destroy_now! for ent in *@to_be_destroyed
+            @to_be_destroyed = {}
