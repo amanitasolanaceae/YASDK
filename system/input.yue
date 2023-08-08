@@ -1,0 +1,30 @@
+import 'class.system' as System
+
+LAYER_CURSOR = 2
+
+global SIGNAL_MOUSE_MOVE = signal.new!
+global SIGNAL_MOUSE_CLICK = signal.new!
+
+class Input extends System
+    new: =>
+        super!
+        @cursor = x: 0, y: 0
+    update: => 
+        if terminal.has_input!
+            input = terminal.read!
+            switch input
+                when TK_CLOSE
+                    terminal.close!
+                    os.exit 0
+                when TK_MOUSE_MOVE
+                    with @cursor
+                        .x = terminal.state TK_MOUSE_X
+                        .y = terminal.state TK_MOUSE_Y
+                        SIGNAL_MOUSE_MOVE\fire .x, .y
+                when TK_MOUSE_LEFT, TK_MOUSE_RIGHT
+                    SIGNAL_MOUSE_CLICK\fire input
+    render: => 
+        print terminal.state TK_WIDTH
+        terminal.clear_area 0, 0, terminal.state(TK_WIDTH), terminal.state(TK_HEIGHT)
+        with @cursor
+            terminal.put .x, .y, 0x25CB

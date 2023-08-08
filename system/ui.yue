@@ -1,0 +1,5 @@
+import 'class.system' as System
+
+LAYER_UI = 1
+
+class UI extends System

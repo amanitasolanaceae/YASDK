@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-YASDK could not exist without these technologies
-------------------------------------------------
-- BearLibTerminal; MIT
-  https://github.com/cfyzium/bearlibterminal
-
-- classy.moon; MIT
-  https://github.com/johnae/classy
-
-- MoonAL; MIT
-  https://github.com/stetre/moonal
-
-- MoonSndFile; MIT
-  https://github.com/stetre/moonsndfile

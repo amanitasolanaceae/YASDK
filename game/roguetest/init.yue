@@ -1,17 +1,5 @@
 global GAME_PATH = ((...)\gsub '%.init', '')\gsub '%.', '/'
-import 'class.system' as System
-class Rainblow extends System
-    new: =>
-        super!
-        @offset = 0
-    update: (dt) => @offset += 1
-    render: =>
-        for y=0,GAME.size.h
-            for x=0,GAME.size.w
-                rainbow = {'red', 'orange', 'yellow', 'green', 'blue', 'purple'}
-                screen.color screen.color_from_name rainbow[((x + y + @offset) % 6) + 1]
-                screen.put x, y, 0x2D62
-        screen.refresh!
+
 class Roguetest extends require'game'
     title: 'Roguetest'
     size: w: 80, h: 25
@@ -21,4 +9,4 @@ class Roguetest extends require'game'
     prepare: =>
         super!
         with @kernel
-            \add_system 'rainblow', Rainblow!
+            \add_system 'input', require'system.input'!

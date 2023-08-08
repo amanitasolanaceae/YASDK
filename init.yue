@@ -11,5 +11,3 @@ require'extends.math'
 require'global'
 
 require'game.roguetest'!
-
---screen.set"font: #{@font.face}, size=#{@font.px};"

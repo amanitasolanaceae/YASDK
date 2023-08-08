@@ -19,7 +19,8 @@ class Entity
         sys = @systems[system]
         error"system '#{system}' not registered for entity #{@} - either a name typo or unexpected set of systems" unless sys
         name ??= generate_unique_name'__unnamed_component_'
-        @add_existing_component name, sys\add(...), sys, default_destructor
+        comp = sys\add ...
+        @add_existing_component name, comp, sys, default_destructor
     remove_component: (name) =>
         component = @c name
         system = @origin_system[name]

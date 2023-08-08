@@ -7,10 +7,11 @@ class Game
     size: w: 80, h: 25
     new: =>
         global GAME = @
-        with screen
+        with terminal
             .open!
             .set"window: title='#{@title}', size=#{floor @size.w}x#{floor @size.h};"
             .set"font: #{@font.face}, size=#{@font.size};" if @font
+            .set"input.filter = [keyboard, mouse+]"
         @prepare!
         @run!
     prepare: => @kernel = Kernel!
@@ -18,6 +19,7 @@ class Game
         --make the clock have its curTime before starting
         clock\step!
         frametimer = 0
+        terminal.refresh!
         while true
             dt = clock\step!
             for v in *{1/2, 1, 2}
@@ -31,7 +33,9 @@ class Game
                 frametimer -= @frametime
                 @update @frametime
                 ticked = true
-            @render frametimer / @frametime if ticked
+            if ticked
+                @render frametimer / @frametime 
+                terminal.refresh!
             sleep .001
     update: (...) => @kernel\update ...
     render: (...) => @kernel\render ...
